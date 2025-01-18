@@ -1,0 +1,33 @@
+version: "3"
+services:
+  mongo:
+    container_name: mongo
+    image: mongo:4
+    ports:
+      - 27017:27017
+  transcribe_service:
+    container_name: transcribe_service
+    build:
+      context: ./transcribe_service
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/transcribe
+    deploy:
+      resources:
+        limits:
+          memory: "3G"
+  express:
+    container_name: express
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/transcribe

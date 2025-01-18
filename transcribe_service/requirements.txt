@@ -1,0 +1,7 @@
+-f https://download.pytorch.org/whl/torch_stable.html
+torch==2.3.1+cpu
+torchaudio==2.3.1+cpu
+pymongo==4.0.1
+whisper-timestamped==1.15.8
+Flask==3.0.1
+flask-cors==3.0.10
