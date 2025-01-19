@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transcribe-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: transcribe
+  template:
+    metadata:
+      labels:
+        component: transcribe
+    spec:
+      containers:
+        - name: transcribe
+          image: localhost:5111/k8s-transcribe_service
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MONGO_URL
+              value: 'mongodb://mongo-cluster-ip-service:27017/transcribe'

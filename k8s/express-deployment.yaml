@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: express-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: express
+  template:
+    metadata:
+      labels:
+        component: express
+    spec:
+      containers:
+        - name: express
+          image: localhost:5111/k8s-backend
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGO_URL
+              value: 'mongodb://mongo-cluster-ip-service:27017/transcribe'
