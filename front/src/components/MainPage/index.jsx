@@ -7,7 +7,7 @@ export default function MainPage() {
     
     useEffect(() => {
         console.log(import.meta.env);
-        const API_BASE_URL = import.meta.env.MODE == 'development' ? import.meta.env.VITE_BACKEND_API_URL : "http://express:3000";
+        const API_BASE_URL = import.meta.env.MODE == 'development' ? import.meta.env.VITE_BACKEND_API_URL : "/api";
         console.log(API_BASE_URL);
         fetch(`${API_BASE_URL}/jobs`)
             .then((response) => response.json())

@@ -33,7 +33,7 @@ export default function TranscribeForm() {
         const formData = new FormData();
         formData.append("file", file);
         try {;
-            const API_BASE_URL = import.meta.env.MODE == 'development' ? import.meta.env.VITE_TRANSCRIBE_API_URL_BASE : "http://transcribe_service:5000";
+            const API_BASE_URL = import.meta.env.MODE == 'development' ? import.meta.env.VITE_TRANSCRIBE_API_URL_BASE : "/transcribe";
             console.log(API_BASE_URL);
             const response = await fetch(`${API_BASE_URL}/transcribe`, {
                 method: "POST",

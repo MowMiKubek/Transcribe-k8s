@@ -7,12 +7,12 @@ export default function DetailsPage() {
     const [data, setData] = useState(null);
     const [error, setError] = useState("");
     
-    const API_BASE_URL = import.meta.env.MODE == 'development' ? import.meta.env.VITE_BACKEND_API_URL : "http://express:3000";
+    const API_BASE_URL = import.meta.env.MODE == 'development' ? import.meta.env.VITE_BACKEND_API_URL : "/api";
     
 
     useEffect(() => {
-        const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL || process.env.BACKEND_API_URL;
         console.log(API_BASE_URL);
+        console.log(id);
         if(id) {
             fetch(`${API_BASE_URL}/jobs/${id}`)
                 .then((response) => response.json())
