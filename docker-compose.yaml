@@ -1,10 +1,11 @@
-version: "3"
 services:
   mongo:
     container_name: mongo
     image: mongo:4
     ports:
       - 27017:27017
+    networks:
+      - internal-net
   transcribe_service:
     container_name: transcribe_service
     build:
@@ -20,6 +21,9 @@ services:
       resources:
         limits:
           memory: "3G"
+    networks:
+      - ftb-net
+      - internal-net
   express:
     container_name: express
     build:
@@ -31,3 +35,26 @@ services:
       - mongo
     environment:
       - MONGO_URL=mongodb://mongo:27017/transcribe
+    networks:
+      - ftb-net
+      - internal-net
+  front:
+    container_name: front
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    # environment:
+    #   - VITE_TRANSCRIBE_API_URL_BASE=http://transcribe_service:5000
+    #   - VITE_BACKEND_API_URL=http://express:3000
+    ports:
+      - 80:3000
+    depends_on:
+      - express
+      - transcribe_service
+    networks:
+      - ftb-net
+networks:
+  ftb-net:
+    driver: bridge
+  internal-net:
+    driver: bridge
