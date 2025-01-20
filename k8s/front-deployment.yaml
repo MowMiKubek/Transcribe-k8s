@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: front
-          image: localhost:5111/k8s-front
+          image: mowmikubek/k8s-front:v1
           ports:
             - containerPort: 3000

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: transcribe
-          image: localhost:5111/k8s-transcribe_service
+          image: mowmikubek/transcribe_service:v1
           ports:
             - containerPort: 5000
           env:
