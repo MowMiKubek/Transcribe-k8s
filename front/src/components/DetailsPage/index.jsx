@@ -6,9 +6,38 @@ export default function DetailsPage() {
     const { id } = useParams();
     const [data, setData] = useState(null);
     const [error, setError] = useState("");
-    
+        
     const API_BASE_URL = import.meta.env.MODE == 'development' ? import.meta.env.VITE_BACKEND_API_URL : "/api";
-    
+    console.log(API_BASE_URL);
+    const generateOutput = (data) => {
+        if(data.status != 'done') {
+            return {};
+        }
+        return {
+            language: data.language,
+            text: data.result.text,
+            segments: data.result.segments.map((item) => {
+                return {
+                    start: item.start,
+                    end: item.end,
+                    text: item.text
+                }
+            })
+        }
+    };
+
+    const download = () => {
+        const output = generateOutput(data);
+        const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'output.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
 
     useEffect(() => {
         console.log(API_BASE_URL);
@@ -70,28 +99,13 @@ export default function DetailsPage() {
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <p>File: {data.file_name}</p>
+                <p>Language: {data.language}</p>
                 <p>Status: {data.status}</p>
+                <p>SHA256: {data.hash.substr(1,30)}...</p>
+                <p className="line-clamp-4"><b>Preview</b>: {data.result?.text}</p>
                 {data.status == 'pending' && <p>Check again in a minute</p>}
                 {data.status == 'done' && 
-                    <table>
-                        <thead>
-                            <th>#</th>
-                            <th>Start</th>
-                            <th>End</th>
-                            <th>Text</th>
-                        </thead>
-                        <tbody>
-                            {data.result.segments.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    <td>{item.start}</td>
-                                    <td>{item.end}</td>
-                                    <td>{item.text}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-            
+                    <button className="font-semibold text-cyan-700 hover:text-cyan-600" onClick={download}>Download</button>            
                 }
                 <p className="mt-10 text-center text-gray-500 text-sm/6">
                     <Link to="/" className="font-semibold text-cyan-700 hover:text-cyan-600">

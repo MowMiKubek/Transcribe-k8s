@@ -1,8 +1,10 @@
 import { Link, useNavigate } from "react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function TranscribeForm() {
     const [file, setFile] = useState(null);
+    const languageRef = useRef(null);
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -32,6 +34,7 @@ export default function TranscribeForm() {
         setError("");
         const formData = new FormData();
         formData.append("file", file);
+        formData.append("language", languageRef.current.value);
         try {;
             const API_BASE_URL = import.meta.env.MODE == 'development' ? import.meta.env.VITE_TRANSCRIBE_API_URL_BASE : "/transcribe";
             console.log(API_BASE_URL);
@@ -90,6 +93,29 @@ export default function TranscribeForm() {
                             {error != "" ? (
                                 <p className="mt-2 text-sm text-red-500">{error}</p>
                             ) : null}
+                        </div>
+                    </div>
+                    <div>
+                    <label
+                            htmlFor="language"
+                            className="block font-medium text-gray-900 text-sm/6"
+                        >
+                            Language
+                        </label>
+                        <div className="mt-2">
+                            <select
+                                ref={languageRef}
+                                name="language"
+                                id="language"
+                                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 placeholder:text-gray-400 sm:text-sm/6 outline-gray-300 focus:outline-cyan-700"
+                            >
+                                <option value="en">English</option>
+                                <option value="pl">Polish</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                                <option value="it">French</option>
+                                <option value="de">German</option>
+                            </select>
                         </div>
                     </div>
                     <div>
