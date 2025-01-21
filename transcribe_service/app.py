@@ -6,6 +6,8 @@ import threading
 import uuid
 import hashlib
 from pymongo import MongoClient
+import datetime
+from multiprocessing import Process
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -18,6 +20,8 @@ mongo_client = MongoClient(mongo_url)
 db = mongo_client["transcriptions_db"]
 jobs_collection = db["jobs"]
 
+info = mongo_client.server_info()
+print("Connected to MongoDB version", info["version"])
 
 def generate_file_hash(file_path):
     hash_sha256 = hashlib.sha256()
@@ -27,19 +31,27 @@ def generate_file_hash(file_path):
     return hash_sha256.hexdigest()
 
 # Background job processing function
-def process_transcription(job_id, file_path, language):
+def process_transcription(mongo_url, job_id, file_path, language):
     try:
-        model = whisper.load_model("base")
+        client = MongoClient(mongo_url)
+        collection = client["transcriptions_db"]["jobs"]
+
+        info = client.server_info()
+        print("Connected to MongoDB version", info["version"])
+
+        model = whisper.load_model("tiny", device="cpu")
         audio = whisper.load_audio(file_path)
         result = whisper.transcribe(model, audio, language=language)
 
-        jobs_collection.update_one(
+        print("Job done:", job_id)
+
+        collection.update_one(
             {"job_id": job_id},
             {"$set": {"status": "done", "result": result}}
         )
     except Exception as e:
         # Handle errors by updating job status
-        jobs_collection.update_one(
+        collection.update_one(
             {"job_id": job_id},
             {"$set": {"status": "error", "error_message": str(e)}}
         )
@@ -75,7 +87,8 @@ def transcribe():
     })
 
     # Process the transcription in a background thread
-    threading.Thread(target=process_transcription, args=(job_id, file_path, language)).start()
+    Process(target=process_transcription, args=(mongo_url, job_id, file_path, language)).start()
+    # threading.Thread(target=process_transcription, args=(mongo_url, job_id, file_path, language)).start()
 
     return jsonify({"job_id": job_id, "status": "pending"}), 202
 
