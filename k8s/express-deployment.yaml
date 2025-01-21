@@ -19,4 +19,7 @@ spec:
             - containerPort: 3000
           env:
             - name: MONGO_URL
-              value: 'mongodb://mongo-cluster-ip-service:27017/transcribe'
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: MONGO_URL

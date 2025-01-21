@@ -98,10 +98,10 @@ export default function DetailsPage() {
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <p>File: {data.file_name}</p>
-                <p>Language: {data.language}</p>
-                <p>Status: {data.status}</p>
-                <p>SHA256: {data.hash.substr(1,30)}...</p>
+                <p>File: {data?.file_name}</p>
+                <p>Language: {data?.language}</p>
+                <p>Status: {data?.status}</p>
+                <p>SHA256: {data?.hash?.substr(1,30)}...</p>
                 <p className="line-clamp-4"><b>Preview</b>: {data.result?.text}</p>
                 {data.status == 'pending' && <p>Check again in a minute</p>}
                 {data.status == 'done' && 
