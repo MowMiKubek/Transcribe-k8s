@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: transcribe
-          image: mowmikubek/transcribe_service:v1
+          image: mowmikubek/k8s-transcribe_service:v2-beta
           ports:
             - containerPort: 5000
           env:
@@ -27,4 +27,4 @@ spec:
             requests:
               cpu: "100m"
             limits:
-              cpu: "1000m"
+              cpu: "2000m"
